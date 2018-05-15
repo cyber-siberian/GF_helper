@@ -1,0 +1,7 @@
+.idea/
+__pycache__/
+ame_glfilter.bat/
+glfilter.bat/
+Log/__pycache__/
+Log/api/*
+Log/utils/flowloger.xlsx
