@@ -2,6 +2,8 @@
 __pycache__/
 ame_glfilter.bat/
 glfilter.bat/
-Log/__pycache__/
-Log/api/*
-Log/utils/flowloger.xlsx
+Bin/Modules/__pycache__/
+Bin/Modules/api/*
+Bin/Modules/utils/flowloger.xlsx
+Log/GL_log.xlsx
+Log/GL_log_tmp.xlsx
