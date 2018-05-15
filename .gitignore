@@ -1,7 +1,7 @@
 .idea/
 __pycache__/
-ame_glfilter.bat/
-glfilter.bat/
+ame_glfilter.bat
+glfilter.bat
 Bin/Modules/__pycache__/
 Bin/Modules/api/*
 Bin/Modules/utils/flowloger.xlsx
