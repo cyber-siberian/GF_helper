@@ -1,3 +1,3 @@
 D:
-cd D:\Clouds\Dropbox\CodeBucket\Python\GF_helper
+cd D:\GitRepos\cyber-siberian\GF_helper
 python ./main.py flamekork@gmail.com

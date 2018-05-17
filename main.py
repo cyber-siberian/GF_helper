@@ -3,11 +3,11 @@ import sys
 
 
 def main():
-    if len(sys.argv) != 1:
+    if len(sys.argv) != 2:
         print("[!]Usage: python main.py <email_address>")
         return 1
     else:
-        your_mailbox = sys.argv[0]
+        your_mailbox = sys.argv[1]
         print("[+]Specified email: " + your_mailbox)
         excel_doc_path = 'Log/GL_log.xlsx'
         GlobalFreelance = glmsger.GLmsger(SCOPES='https://mail.google.com/',
