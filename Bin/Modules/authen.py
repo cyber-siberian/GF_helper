@@ -17,6 +17,8 @@ class authen:
         self.SCOPES = SCOPES
 
     def set_api(self):
+        if not os.path.exists('Bin/Modules/api'):
+            os.makedirs('Bin/Modules/api')
         store = file.Storage("Bin/Modules/api/credentials.json")
         creds = store.get()
         if not creds or creds.invalid:
