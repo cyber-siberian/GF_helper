@@ -2,35 +2,34 @@ import openpyxl
 from openpyxl.styles import PatternFill, Border, Side
 import datetime
 import shutil
+from win32com.client.gencache import EnsureDispatch
+from win32com.client import constants
 import os
 
-flowloger = 'Bin/Modules/utils/flowloger.xlsx'
+flowloger = os.getcwd() + '/Bin/Modules/utils/flowloger.xlsx'
 
 class Logger():
-    def __init__(self, excel):
-        self.EXCEL_DOC_PATH = excel
-        self.xwb = openpyxl.load_workbook(flowloger)
-        self.xsheet = self.xwb['May']
+    def __init__(self, html=None):
+        self.HTML_DOC_PATH = html
+        try:
+            self.xwb = openpyxl.load_workbook(flowloger)
+        except FileNotFoundError:
+            self.xwb = openpyxl.Workbook()
+            self.xwb.save(flowloger)
+        self.xsheet = self.xwb['Sheet']
 
     def save_document(self):
-        tmp_copy_path = self.EXCEL_DOC_PATH.split('.xlsx')[0] + '_tmp.xlsx'
         try:
             self.xwb.save(flowloger)
-            shutil.copy2(flowloger, self.EXCEL_DOC_PATH)
-            print('[+]' + self.EXCEL_DOC_PATH + ' updated')
+            self.update_html()
+            print('[+]Log file is updated')
             return True
         except PermissionError as ex:
             print("[!]Can't save .xlsx file -> " + str(ex))
-            print("[!]Can't save " + self.EXCEL_DOC_PATH + " file -> " + str(ex))
-            print("[.]Creating temp-copy '" + tmp_copy_path + "'")
-            self.xwb.save(tmp_copy_path)
+            print("[!]Can't save '" + flowloger + "' file -> " + str(ex))
             return False
 
     def set_current_date(self):
-        try:
-            shutil.copy2(flowloger, self.EXCEL_DOC_PATH)
-        except PermissionError as ex:
-            pass
         last_row = self.xsheet.max_row
         date_cell = self.xsheet.cell(row=last_row+2, column=1)
         date = (str(datetime.date.today().day) if datetime.date.today().day > 9 else '0' + str(datetime.date.today().day)) + "." \
@@ -50,11 +49,7 @@ class Logger():
         date_cell.fill = dateFill
         date_cell.border = dateBorder
         val = date_cell.value
-        try:
-            self.xwb.save(flowloger)
-        except PermissionError as ex:
-            print("[!]Can't save .xlsx file -> " + str(ex))
-            return False
+        self.save_document()
         print("[+]Current date set to " + val)
         return True
 
@@ -146,3 +141,11 @@ class Logger():
                 print("[+]Task " + str(task) + " set missed on " + date)
                 return True
         return False
+
+    def update_html(self):
+        xl = EnsureDispatch('Excel.Application')
+        xl.DisplayAlerts = False
+        wb = xl.Workbooks.Open(flowloger)
+        wb.SaveAs(self.HTML_DOC_PATH, constants.xlHtml)
+        xl.Workbooks.Close()
+        xl.Quit()

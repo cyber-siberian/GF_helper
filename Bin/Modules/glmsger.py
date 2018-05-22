@@ -1,20 +1,16 @@
 from Bin.Modules import authen
 from Bin.Modules import logger
 
-""" TODO:
-- Delete from excel 'out of listing'
-"""
-
 
 class GLmsger():
-    def __init__(self, SCOPES, ID, EXCEL=None):
+    def __init__(self, SCOPES, ID, HTML=None):
         self.SCOPES = SCOPES
         self.ID = ID
         self.GMAIL = authen.authen(self.SCOPES)
         self.SERVICE = self.GMAIL.set_api()
         self.LOGGER = None
-        if EXCEL is not None:
-            self.LOGGER = logger.Logger(EXCEL)
+        if HTML is not None:
+            self.LOGGER = logger.Logger(HTML)
 
     " Transform new task-message from GlobalFreelance into dict"
     def glmsg_decoder(self, msg):

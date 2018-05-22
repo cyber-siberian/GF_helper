@@ -1,6 +1,8 @@
 .idea/
 __pycache__/
 Bin/Modules/__pycache__/
+Log/
+Bin/Modules/htmlgen.py
 *.bat
 *.json
 *.xlsx
