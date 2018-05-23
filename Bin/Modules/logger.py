@@ -1,7 +1,6 @@
 import openpyxl
 from openpyxl.styles import PatternFill, Border, Side
 import datetime
-import shutil
 from win32com.client.gencache import EnsureDispatch
 from win32com.client import constants
 import os
@@ -9,6 +8,7 @@ import os
 if not os.path.exists('Bin/Modules/utils'):
     os.makedirs('Bin/Modules/utils')
 flowloger = os.getcwd() + '/Bin/Modules/utils/flowloger.xlsx'
+
 
 class Logger():
     def __init__(self, html=None):
