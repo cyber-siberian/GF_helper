@@ -1,6 +1,12 @@
 from Bin.Modules import gmailAPI
 from Bin.Modules import logger
+import datetime
 
+date = (str(datetime.date.today().day) if datetime.date.today().day > 9
+                else '0' + str(datetime.date.today().day)) + "." \
+               + (str(datetime.date.today().month) if datetime.date.today().month > 9
+                  else '0' + str(datetime.date.today().month)) + "." \
+               + str(datetime.date.today().year)
 
 class GLmsger():
     def __init__(self, ID, HTML=None):
@@ -40,13 +46,13 @@ class GLmsger():
                         self.GMAIL.msg_to_thrash(new_task_msg['id'])
                         print("[+]The following message sent to trash:")
                         print("\t" + new_task['payload']['headers'][16]['value'] + " Reason -> " + decoded_task[filter_key] + " is in filter")
-                    else:
-                        print('\n[*] New Task!')
-                        print('\t(' + decoded_task['NUMBER'] + ')')
-                        print('\tTitle:    ' + decoded_task['TITLE'])
-                        print('\tLevel:    ' + decoded_task['LEVEL'])
-                        print('\tDeadline: ' + decoded_task['DEADLINE'])
-                        print('\tTask:     ' + decoded_task['TASK'])
+                    # else:
+                        # print('\n[*] New Task!')
+                        # print('\t(' + decoded_task['NUMBER'] + ')')
+                        # print('\tTitle:    ' + decoded_task['TITLE'])
+                        # print('\tLevel:    ' + decoded_task['LEVEL'])
+                        # print('\tDeadline: ' + decoded_task['DEADLINE'])
+                        # print('\tTask:     ' + decoded_task['TASK'])
         else:
             print("[.]No new tasks yet")
 
@@ -74,6 +80,7 @@ class GLmsger():
         else:
             print("[.]No expired tasks")
 
+    " Find new quote messages "
     def glquote_find(self):
         new_quote_msgs = self.GMAIL.find_msg('from: service@globalfreelance.ru +quote received')
         if new_quote_msgs:
@@ -89,6 +96,7 @@ class GLmsger():
                     except IndexError:
                         pass
 
+    " Find done tasks "
     def gldone_find(self):
         new_done_msgs = self.GMAIL.find_msg('to: service@globalfreelance.ru +Completed')
         if new_done_msgs:
@@ -102,3 +110,23 @@ class GLmsger():
                             self.LOGGER.set_task_done(done_msg_tasknum)
                     except IndexError:
                         pass
+
+    " Delete old tasks "
+    def glold_filter(self):
+        new_old_msgs = self.GMAIL.find_msg('from: service@globalfreelance.ru +for evaluation')
+        if new_old_msgs:
+            for new_old_msg in new_old_msgs:
+                new_old = self.GMAIL.get_msg(new_old_msg['id'])
+                if new_old:
+                    decoded_old = self.glmsg_decoder(new_old['snippet'])
+                    task_date = decoded_old['DEADLINE'].split(' ')[0]
+                    task_date = task_date.split('.')
+                    cur_date = date.split('.')
+                    if task_date[0] < cur_date[0] and task_date[1] <= cur_date[1] and task_date[2] <= cur_date[2]:
+                        print("[+]Task " + decoded_old['NUMBER'] + " is outdated on " + str(decoded_old['DEADLINE'].split(' ')[0]))
+                        self.GMAIL.msg_to_thrash(new_old_msg['id'])
+
+    " Update HTML-file "
+    def glupdate_html(self):
+        if self.LOGGER is not None:
+            self.LOGGER.update_html()
