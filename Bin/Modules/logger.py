@@ -3,7 +3,7 @@ from openpyxl.styles import PatternFill, Border, Side
 import datetime
 from win32com.client.gencache import EnsureDispatch
 from win32com.client import constants
-import os
+import os, shutil
 
 if not os.path.exists('Bin/Modules/utils'):
     os.makedirs('Bin/Modules/utils')
@@ -148,6 +148,14 @@ class Logger():
         xl = EnsureDispatch('Excel.Application')
         xl.DisplayAlerts = False
         wb = xl.Workbooks.Open(flowloger)
-        wb.SaveAs(self.HTML_DOC_PATH, constants.xlHtml)
+        try:
+            wb.SaveAs(self.HTML_DOC_PATH, constants.xlHtml)
+        except:
+            xl.Workbooks.Close()
+            xl.Quit()
+            shutil.rmtree(self.HTML_DOC_PATH.split("\\GL_log.htm")[0])
+            os.makedirs(self.HTML_DOC_PATH.split("\\GL_log.htm")[0])
+            update_html()
+            pass
         xl.Workbooks.Close()
         xl.Quit()
